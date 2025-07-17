@@ -4,9 +4,26 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
+authors = [
+    { name = "srkdesign", email = "srkdsgn@gmail.com", website = "https://srkdesign.pro" }
+]
 dependencies = [
     "flet[all]>=0.28.3",
     "openpyxl>=3.1.5",
     "pandas>=2.3.1",
     "xlsxwriter>=3.2.5",
 ]
+
+[tool.flet]
+name="Image Watermarker"
+product = "Image Watermarker"
+copyright = "Copyright (C) 2025, srkdesign"
+
+[tool.flet.app]
+path = "src"
+
+[tool.flet.macos]
+build_arch = "arm64"
+entitlement."com.apple.security.app-sandbox" = false
+entitlement."com.apple.security.files.user-selected.read-write" = true
+entitlement."com.apple.security.cs.disable-library-validation" = true

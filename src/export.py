@@ -4,13 +4,18 @@ from apply_formatting import format_to_currency, adjust_columns
 
 currency_formats = {
     "USD": '"$"#,##0.00',
-    "EUR": '#,##0.00 €',
-    "RUB": '#,##0.00 ₽',
-    # Add more as needed
+    "RUB": "#,##0.00 ₽",
 }
 
+
 # Exporting data to an excel sheet
-def export_to_excel(all_pages_data, section_bp, page_bp, currency_code, currency_formats=currency_formats):
+def export_to_excel(
+    all_pages_data,
+    section_bp,
+    page_bp,
+    currency_code,
+    currency_formats=currency_formats,
+):
     rows = []
     outline_levels = []
 
@@ -35,32 +40,46 @@ def export_to_excel(all_pages_data, section_bp, page_bp, currency_code, currency
             price = float(section_bp.value) * difficulty
             total_page_cost += price
 
-            page_rows.append({
-                "Страница": "",
-                "Блок": title,
-                "Описание": desc,
-                "Сложность": difficulty,
-                "Стоимость": price,
-            })
+            page_rows.append(
+                {
+                    "Страница": "",
+                    "Блок": title,
+                    "Описание": desc,
+                    "Сложность": difficulty,
+                    "Стоимость": price,
+                }
+            )
             page_outline_levels.append(1)
 
-        total_page_cost = max(total_page_cost, page_bp.value)
+        total_page_cost = max(total_page_cost, float(page_bp.value))
         grand_total += total_page_cost
 
         # Page-level row
-        page_rows.insert(0, {
-            "Страница": page_name,
-            "Блок": "",
-            "Описание": "",
-            "Сложность": "",
-            "Стоимость": total_page_cost,
-        })
+        page_rows.insert(
+            0,
+            {
+                "Страница": page_name,
+                "Блок": "",
+                "Описание": "",
+                "Сложность": "",
+                "Стоимость": total_page_cost,
+            },
+        )
         page_outline_levels.insert(0, 0)
 
         rows.extend(page_rows)
         outline_levels.extend(page_outline_levels)
 
     df = pd.DataFrame(rows)
+
+    df.loc[len(df.index)] = {
+        "Страница": "",
+        "Блок": "",
+        "Описание": "",
+        "Сложность": "Итого",
+        "Стоимость": grand_total,
+    }
+
     filename = "project_estimate.xlsx"
 
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
@@ -70,7 +89,7 @@ def export_to_excel(all_pages_data, section_bp, page_bp, currency_code, currency
         for i, level in enumerate(outline_levels, start=2):
             row_dim = ws.row_dimensions[i]
             row_dim.outlineLevel = level
-            row_dim.collapsed = (level == 1)
+            row_dim.collapsed = level == 1
 
         ws.sheet_properties.outlinePr.summaryBelow = True
 
@@ -79,5 +98,9 @@ def export_to_excel(all_pages_data, section_bp, page_bp, currency_code, currency
 
         adjust_columns(ws)
         format_to_currency(ws, currency_code, currency_formats)
+
+        last_row = ws.max_row
+        ws[f"D{last_row}"].font = Font(bold=True)
+        ws[f"E{last_row}"].font = Font(bold=True)
 
     print(f"✅ Excel file saved: {filename}")
