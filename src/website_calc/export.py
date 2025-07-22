@@ -4,14 +4,21 @@ from openpyxl.styles import Font, PatternFill
 from website_calc.apply_formatting import format_to_currency, adjust_columns
 
 currency_formats = {
-  "USD": '"$"#,##0.00',       # Excel-compliant format
+  "USD": '"$" #,##0.00',       # Excel-compliant format
   "RUB": '#,##0.00" ₽"',      # Ruble with space and quotes
 }
 
 # Exporting data to an excel sheet
 def export_to_excel(filename, pages, section_bp_field, page_bp_field, currency_code, currency_formats=currency_formats):
-
+  print(f"📦 [DEBUG] currency_code = {currency_code}")
   try:
+    headers_ru = ["Страница", "Блок", "Описание", "Сложность", "Стоимость"]
+    headers_en = ["Page", "Section", "Description", "Difficulty", "Cost"]
+    headers = headers_en if currency_code == "USD" else headers_ru
+
+    total_label = "Total" if currency_code == "USD" else "Итого"
+    cost_column_name = headers[-1]
+
     rows = []
     outline_levels = []
 
@@ -35,11 +42,11 @@ def export_to_excel(filename, pages, section_bp_field, page_bp_field, currency_c
         total_page_cost += price
 
         page_rows.append({
-          "Страница": "",
-          "Блок": title,
-          "Описание": desc,
-          "Сложность": difficulty,
-          "Стоимость": price,
+          headers[0]: "",
+          headers[1]: title,
+          headers[2]: desc,
+          headers[3]: difficulty,
+          headers[4]: price,
         })
         page_outline_levels.append(1)
 
@@ -47,31 +54,34 @@ def export_to_excel(filename, pages, section_bp_field, page_bp_field, currency_c
       grand_total += total_page_cost
 
       page_rows.insert(0, {
-        "Страница": page_name,
-        "Блок": "",
-        "Описание": "",
-        "Сложность": "",
-        "Стоимость": total_page_cost,
+        headers[0]: page_name,
+        headers[1]: "",
+        headers[2]: "",
+        headers[3]: "",
+        headers[4]: total_page_cost,
       })
       page_outline_levels.insert(0, 0)
 
       rows.extend(page_rows)
       outline_levels.extend(page_outline_levels)
 
+    print(f"🧪 [DEBUG] Using headers: {headers}")
     df = pd.DataFrame(rows)
     df.loc[len(df.index)] = {
-      "Страница": "",
-      "Блок": "",
-      "Описание": "",
-      "Сложность": "Итого",
-      "Стоимость": grand_total,
+      headers[0]: "",
+      headers[1]: "",
+      headers[2]: "",
+      headers[3]: total_label,
+      headers[4]: grand_total,
     }
 
-    print(f"Saving Excel to: {filename}")
+    print(f"[DEBUG] Saving Excel to: {filename}")
+
+    sheet_name = "Website Quote" if currency_code == "USD" else "Расчет стоимости сайта"
 
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
-      df.to_excel(writer, index=False, sheet_name="Расчет стоимости сайта")
-      ws = writer.sheets["Расчет стоимости сайта"]
+      df.to_excel(writer, index=False, sheet_name=sheet_name)
+      ws = writer.sheets["Website Quote"] if currency_code == "USD" else writer.sheets["Расчет стоимости сайта"]
 
       for i, level in enumerate(outline_levels, start=2):
         row_dim = ws.row_dimensions[i]
@@ -84,7 +94,7 @@ def export_to_excel(filename, pages, section_bp_field, page_bp_field, currency_c
         cell.font = Font(bold=True)
 
       adjust_columns(ws)
-      format_to_currency(ws, currency_code, currency_formats)
+      format_to_currency(ws, currency_code, currency_formats, target_column_name=cost_column_name)
 
       header_fill = PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid")
       for cell in ws[1]:
@@ -95,7 +105,7 @@ def export_to_excel(filename, pages, section_bp_field, page_bp_field, currency_c
       ws[f"D{last_row}"].font = Font(bold=True)
       ws[f"E{last_row}"].font = Font(bold=True)
 
-    print(f"✅ Excel file saved: {filename}")
+    print(f"✅ [DEBUG] Excel file saved: {filename}")
 
   except Exception as e:
-      print("Failed to export Excel file:", e)
+      print("[DEBUG] Failed to export Excel file:", e)

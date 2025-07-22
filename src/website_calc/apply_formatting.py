@@ -41,5 +41,5 @@ def adjust_columns(ws):
         if cell_length > max_length:
           max_length = cell_length
     
-    adjusted_width = max_length + 2
+    adjusted_width = max_length + 5
     ws.column_dimensions[col_letter].width = adjusted_width
