@@ -27,6 +27,7 @@ formal_name = "Website Calculator"
 description = "A time-saving tool for designers and developers that helps estimate website development costs"
 long_description = """More details about the app should go here.
 """
+icon = "src/website_calc/resources/AppIcon"
 sources = [
     "src/website_calc",
 ]

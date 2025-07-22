@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt, Signal
 from website_calc.widgets.section import Section
 
 class Page(QWidget):
@@ -28,11 +28,18 @@ class Page(QWidget):
     info_row = QHBoxLayout()
     info_row.addWidget(self.title)
     info_row.addWidget(self.delete_page_btn)
+    info_row.setAlignment(Qt.AlignVCenter)
+
+    totals_row = QHBoxLayout()
+    totals_row.addWidget(self.total_price_label)
+    totals_row.addWidget(self.section_count_label)
+    totals_row.setSpacing(32)
+    totals_row.setAlignment(Qt.AlignLeft)
 
     btn_row = QVBoxLayout()
     btn_row.addWidget(self.add_section_btn)
-    btn_row.addWidget(self.section_count_label)
-    btn_row.addWidget(self.total_price_label)
+    btn_row.addLayout(totals_row)
+    btn_row.setSpacing(20)
 
     self.section_layout = QVBoxLayout()
 
@@ -41,6 +48,8 @@ class Page(QWidget):
     layout.addLayout(self.section_layout)
     layout.addLayout(btn_row)
 
+    layout.setAlignment(Qt.AlignTop)
+    layout.setSpacing(8)
     self.setLayout(layout)
     self.add_section()
 

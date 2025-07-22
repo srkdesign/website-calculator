@@ -3,7 +3,9 @@ My first application
 """
 
 import importlib.metadata
+import os
 import sys
+from pathlib import Path
 
 from website_calc.export import export_to_excel
 from website_calc.widgets.currency_dropdown import CurrencyDropdown
@@ -15,7 +17,10 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QScrollArea, QFileDialog
 )
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QFont
+from PySide6.QtCore import Qt
+
+ICON_PATH = Path(__file__).parent / "resources" / "AppIcon.icns"
 
 currencies = ["USD", "RUB"]
 
@@ -29,6 +34,7 @@ class WebsiteCalc(QtWidgets.QMainWindow):
 
   def init_ui(self):
     self.setWindowTitle("Website Calculator by srkdesign")
+    self.setWindowIcon(QIcon(str(ICON_PATH)))
     self.resize(800,600)
 
     central = QWidget()
@@ -44,13 +50,15 @@ class WebsiteCalc(QtWidgets.QMainWindow):
 
     bp_row = QHBoxLayout()
     bp_row.addWidget(self.section_bp)
-    bp_row.addSpacing(32)
     bp_row.addWidget(self.page_bp)
+    bp_row.setAlignment(Qt.AlignCenter)
+    bp_row.setSpacing(0)
 
     self.layout.addLayout(bp_row)
 
     self.scroll_area = QScrollArea()
     self.scroll_area.setWidgetResizable(True)
+    self.scroll_area.setAlignment(Qt.AlignTop)
 
     self.pages_container = QWidget()
     self.pages_layout = QVBoxLayout(self.pages_container)
@@ -79,13 +87,12 @@ class WebsiteCalc(QtWidgets.QMainWindow):
     self.page_bp.changed.connect(self.update_all_pages)
 
     self.add_page()
-
     self.show()
 
   def on_currency_change(self, currency):
     self.section_bp.set_suffix(currency)
     self.page_bp.set_suffix(currency)
-    self.calculate_total()
+    self.update_all_pages()
 
   def add_page(self):
     page = Page(section_bp_getter=self.section_bp.get_price, page_bp_getter=self.page_bp.get_price, currency_getter=self.currency_dropdown.current_currency)
@@ -105,7 +112,7 @@ class WebsiteCalc(QtWidgets.QMainWindow):
 
   def update_all_pages(self):
     for page in self.pages:
-      page.update_prices()
+      page.recalc()
     self.update_grand_total()
 
   def update_grand_total(self):
@@ -116,14 +123,6 @@ class WebsiteCalc(QtWidgets.QMainWindow):
         total += page.get_total()
 
     self.grand_total_label.setText(f"Итоговая стоимость сайта: {total:.2f} {currency}")
-
-  # def calculate_total(self):
-  #   section_price = self.section_bp.get_price()
-  #   page_price = self.page_bp.get_price()
-  #   currency = self.currency_dropdown.current_currency()
-
-  #   total = max(section_price, page_price)
-  #   self.grand_total_label.setText(f"Итоговая стоимость сайта: {total:.2f} {currency}")
 
   def export_data(self):
     options = QFileDialog.Options()
@@ -145,9 +144,8 @@ class WebsiteCalc(QtWidgets.QMainWindow):
           section_bp_field=self.section_bp.get_price,
           filename=filename,
           page_bp_field=self.page_bp.get_price,
-          currency_code=self.currency_dropdown.current_currency,
+          currency_code=self.currency_dropdown.current_currency(),
         )
-    print("Export logic triggered (to be implemented).")
 
 def main():
   # Linux desktop environments use an app's .desktop file to integrate the app
@@ -167,5 +165,16 @@ def main():
   QtWidgets.QApplication.setApplicationName(metadata["Formal-Name"])
 
   app = QtWidgets.QApplication(sys.argv)
+  font = QFont()
+  font.setPointSize(16)
+  app.setFont(font)
+  app.setStyleSheet("""
+    QLineEdit {
+        padding: 4px;
+    }
+    QPushButton {
+      height: 20px;
+    }
+  """)
   main_window = WebsiteCalc()
   sys.exit(app.exec())

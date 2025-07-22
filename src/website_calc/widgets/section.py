@@ -1,5 +1,6 @@
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtCore import Signal
+from PySide6.QtGui import QIntValidator
 
 class Section(QWidget):
   changed = Signal(object)
@@ -12,6 +13,7 @@ class Section(QWidget):
     self.desc = QLineEdit(placeholderText="Описание")
 
     self.difficulty = QLineEdit(placeholderText="Сложность")
+    self.difficulty.setValidator(QIntValidator())
     self.difficulty.textChanged.connect(lambda _: self.changed.emit(self))
 
     self.price_label = QLabel("0.00")
@@ -25,6 +27,9 @@ class Section(QWidget):
     layout.addWidget(self.difficulty)
     layout.addWidget(self.price_label)
     layout.addWidget(self.delete_btn)
+    layout.setAlignment(Qt.AlignJustify)
+    layout.setContentsMargins(0, 0, 0, 0)
+    layout.setSpacing(20)
     self.setLayout(layout)
 
   def on_delete(self):

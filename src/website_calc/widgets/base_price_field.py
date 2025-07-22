@@ -1,5 +1,6 @@
-from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QHBoxLayout
 from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QHBoxLayout
+from PySide6.QtGui import QIntValidator
 
 class BasePriceField(QWidget):
   changed = Signal(float)
@@ -7,6 +8,7 @@ class BasePriceField(QWidget):
     super().__init__(parent)
 
     self.input = QLineEdit(default_value)
+    self.input.setValidator(QIntValidator())
 
     layout = QHBoxLayout()
     layout.addWidget(QLabel(label))
