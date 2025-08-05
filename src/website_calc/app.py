@@ -4,7 +4,8 @@ Website Calculator by srkdesign
 
 import importlib.metadata
 import sys
-# from pathlib import Path
+from pathlib import Path
+from importlib.resources import files
 
 from website_calc.export import export_to_excel
 from website_calc.widgets.currency_dropdown import CurrencyDropdown
@@ -15,11 +16,11 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QScrollArea, QFileDialog
 )
-# from PySide6.QtGui import QIcon, QFont
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QIcon, QFont
+# from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
-# ICON_PATH = Path(__file__).parent / "resources" / "AppIcon.icns"
+ICON_PATH = files("website_calc.resources").joinpath("icon.png")
 
 currencies = ["USD", "RUB"]
 
@@ -33,7 +34,7 @@ class WebsiteCalc(QMainWindow):
 
   def init_ui(self):
     self.setWindowTitle("Website Calculator by srkdesign")
-    # self.setWindowIcon(QIcon(str(ICON_PATH)))
+    self.setWindowIcon(QIcon(str(ICON_PATH)))
     self.resize(800,600)
 
     central = QWidget()
