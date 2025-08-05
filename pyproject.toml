@@ -50,7 +50,6 @@ min_os_version = "12.0"
 requires = [
     "std-nslog~=1.0.3",
 ]
-icon = "src/website_calc/resources/AppIcon.icns"
 
 [tool.briefcase.app.website_calc.linux]
 requires = [
@@ -126,7 +125,6 @@ flatpak_sdk = "org.kde.Sdk"
 [tool.briefcase.app.website_calc.windows]
 requires = [
 ]
-icon = "src/website_calc/resources/AppIcon.ico"
 
 # Mobile deployments
 [tool.briefcase.app.website_calc.iOS]
