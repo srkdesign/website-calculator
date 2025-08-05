@@ -1,6 +1,6 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QRegularExpression
 from PySide6.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtGui import QIntValidator
+from PySide6.QtGui import QRegularExpressionValidator
 
 class Section(QWidget):
   changed = Signal(object)
@@ -13,7 +13,8 @@ class Section(QWidget):
     self.desc = QLineEdit(placeholderText="Описание")
 
     self.difficulty = QLineEdit(placeholderText="Сложность")
-    self.difficulty.setValidator(QIntValidator())
+    validator = QRegularExpressionValidator(QRegularExpression(r"^(0|[1-5]|([1-5])/([1-5])|0?\.\d+)$"))
+    self.difficulty.setValidator(validator)
     self.difficulty.textChanged.connect(lambda _: self.changed.emit(self))
 
     self.price_label = QLabel("0.00")
@@ -22,12 +23,12 @@ class Section(QWidget):
     self.delete_btn.clicked.connect(self.on_delete)
 
     layout =  QHBoxLayout()
-    layout.addWidget(self.title)
-    layout.addWidget(self.desc)
-    layout.addWidget(self.difficulty)
-    layout.addWidget(self.price_label)
+    layout.addWidget(self.title, stretch=1)
+    layout.addWidget(self.desc, stretch=1)
+    layout.addWidget(self.difficulty, stretch=1)
+    layout.addWidget(self.price_label, stretch=1)
     layout.addWidget(self.delete_btn)
-    layout.setAlignment(Qt.AlignJustify)
+    # layout.setAlignment(Qt.AlignJustify)
     layout.setContentsMargins(0, 0, 0, 0)
     layout.setSpacing(20)
     self.setLayout(layout)

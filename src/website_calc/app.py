@@ -1,40 +1,39 @@
 """
-My first application
+Website Calculator by srkdesign
 """
 
 import importlib.metadata
-import os
 import sys
-from pathlib import Path
+# from pathlib import Path
 
 from website_calc.export import export_to_excel
 from website_calc.widgets.currency_dropdown import CurrencyDropdown
 from website_calc.widgets.base_price_field import BasePriceField
 from website_calc.widgets.page import Page
 
-from PySide6 import QtWidgets
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QScrollArea, QFileDialog
 )
-from PySide6.QtGui import QIcon, QFont
+# from PySide6.QtGui import QIcon, QFont
+from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
-ICON_PATH = Path(__file__).parent / "resources" / "AppIcon.icns"
+# ICON_PATH = Path(__file__).parent / "resources" / "AppIcon.icns"
 
 currencies = ["USD", "RUB"]
 
 class Pages(QWidget):
   pass
 
-class WebsiteCalc(QtWidgets.QMainWindow):
+class WebsiteCalc(QMainWindow):
   def __init__(self):
     super().__init__()
     self.init_ui()
 
   def init_ui(self):
     self.setWindowTitle("Website Calculator by srkdesign")
-    self.setWindowIcon(QIcon(str(ICON_PATH)))
+    # self.setWindowIcon(QIcon(str(ICON_PATH)))
     self.resize(800,600)
 
     central = QWidget()
@@ -162,9 +161,9 @@ def main():
   # Retrieve the app's metadata
   metadata = importlib.metadata.metadata(app_module)
 
-  QtWidgets.QApplication.setApplicationName(metadata["Formal-Name"])
+  QApplication.setApplicationName(metadata["Formal-Name"])
 
-  app = QtWidgets.QApplication(sys.argv)
+  app = QApplication(sys.argv)
   font = QFont()
   font.setPointSize(16)
   app.setFont(font)
@@ -177,4 +176,5 @@ def main():
     }
   """)
   main_window = WebsiteCalc()
+  main_window.show()
   sys.exit(app.exec())

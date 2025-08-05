@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 from openpyxl.styles import Font, PatternFill
 from website_calc.apply_formatting import format_to_currency, adjust_columns

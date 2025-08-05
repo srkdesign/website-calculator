@@ -1,7 +1,3 @@
-from openpyxl.styles import numbers
-from openpyxl.utils import get_column_letter
-
-
 from openpyxl.utils import get_column_letter
 
 def format_to_currency(
