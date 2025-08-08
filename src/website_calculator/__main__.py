@@ -1,4 +1,4 @@
-from website_calc.app import main
+from website_calculator.app import main
 
 
 if __name__ == "__main__":

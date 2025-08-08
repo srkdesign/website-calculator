@@ -1,6 +1,6 @@
 import pandas as pd
 from openpyxl.styles import Font, PatternFill
-from website_calc.apply_formatting import format_to_currency, adjust_columns
+from website_calculator.apply_formatting import format_to_currency, adjust_columns
 
 currency_formats = {
   "USD": '"$" #,##0.00',       # Excel-compliant format

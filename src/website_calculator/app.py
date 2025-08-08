@@ -7,10 +7,10 @@ import sys
 from pathlib import Path
 from importlib.resources import files
 
-from website_calc.export import export_to_excel
-from website_calc.widgets.currency_dropdown import CurrencyDropdown
-from website_calc.widgets.base_price_field import BasePriceField
-from website_calc.widgets.page import Page
+from website_calculator.export import export_to_excel
+from website_calculator.widgets.currency_dropdown import CurrencyDropdown
+from website_calculator.widgets.base_price_field import BasePriceField
+from website_calculator.widgets.page import Page
 
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -20,7 +20,7 @@ from PySide6.QtGui import QIcon, QFont
 # from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
-ICON_PATH = files("website_calc.resources").joinpath("icon.png")
+ICON_PATH = files("website_calculator.resources").joinpath("icon.png")
 
 currencies = ["USD", "RUB"]
 

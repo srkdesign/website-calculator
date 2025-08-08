@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit
 from PySide6.QtCore import Qt, Signal
-from website_calc.widgets.section import Section
+from website_calculator.widgets.section import Section
 
 class Page(QWidget):
   changed = Signal()
