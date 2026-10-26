@@ -1,7 +1,7 @@
 [project]
 name = "website_calculator"
 version = "0.1.0"
-description = "Add your description here"
+description = "A time-saving tool for designers and developers that helps estimate website development costs"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
